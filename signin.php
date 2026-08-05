@@ -1,0 +1,634 @@
+<?php
+
+include "db.php";
+
+if(isset($_POST['login'])){
+
+$email = $_POST['email'];
+$password = $_POST['password'];
+
+$sql = "SELECT * FROM users WHERE email='$email'";
+
+$result = mysqli_query($conn,$sql);
+
+if(mysqli_num_rows($result)==1){
+
+$user = mysqli_fetch_assoc($result);
+
+if(password_verify($password,$user['password'])){
+
+echo "Login Successful";
+
+}else{
+
+echo "Wrong Password";
+
+}
+
+}else{
+
+echo "Email doesn't exist";
+
+}
+
+}
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In - FurryCorner PH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue: #7BB8F0;
+    --blue-dark: #5CA3E8;
+    --cream: #FCE3C0;
+    --cream-light: #FDEEDA;
+    --ink: #1F2430;
+    --white: #ffffff;
+    --border: #e2e6ec;
+    --muted: #9aa1ad;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  body{
+    font-family:'Nunito', sans-serif;
+    color: var(--ink);
+    background: var(--cream-light);
+    line-height:1.5;
+    min-height: 100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  a{ 
+    text-decoration:none; 
+    color: inherit; 
+  }
+
+  .top-header{
+    display:flex;
+    justify-content:center;
+    padding: 30px 20px;
+  }
+
+  .top-header .logo{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    font-family:'Baloo 2', cursive;
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--blue-dark);
+  }
+
+  .top-header .logo img{ 
+    width: 100px; 
+    height:100px; 
+    object-fit:contain; 
+  }
+
+  .auth-wrap{
+    flex: 1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 20px 20px 60px;
+  }
+
+  .auth-card{
+    background: var(--white);
+    width: 100%;
+    max-width: 420px;
+    border-radius: 18px;
+    padding: 36px 34px 32px;
+    box-shadow: 0 16px 40px rgba(31,36,48,0.08);
+  }
+
+  .auth-card h1{
+    font-family:'Baloo 2', cursive;
+    font-size: 26px;
+    text-align:center;
+    margin-bottom: 8px;
+  }
+  .auth-card p.sub{
+    text-align:center;
+    font-size: 14.5px;
+    font-weight:600;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .google-btn{
+    width: 100%;
+    height: 50px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 12px;
+    font-family:'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--ink);
+    cursor:pointer;
+    transition: background .2s ease, border-color .2s ease;
+    margin-bottom: 22px;
+  }
+
+  .google-btn:hover{ 
+    background: #f7f8fa; 
+    border-color: #d7dbe1; 
+  }
+
+  .google-btn svg{ 
+    width: 20px; 
+    height:20px; 
+    flex-shrink:0; 
+  }
+
+  .divider{
+    display:flex;
+    align-items:center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .divider::before, .divider::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background: var(--border);
+  }
+  .divider span{
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  .field-label{
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    margin-bottom: 8px;
+    display:block;
+  }
+
+  .field{
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family:'Nunito', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--white);
+    outline:none;
+    margin-bottom: 18px;
+  }
+
+  .field:focus{ 
+    border-color: var(--blue); 
+  }
+
+  .field::placeholder{ 
+    color: #a7adb8; 
+    font-weight:600; }
+
+  .field-error{
+    color: #e0685f;
+    font-size: 13px;
+    font-weight: 700;
+    margin: -10px 0 14px;
+    display:none;
+  }
+
+  .field-error.show{ 
+    display:block; 
+  }
+
+  .primary-btn{
+    width: 100%;
+    height: 50px;
+    border-radius: 10px;
+    border:none;
+    background: var(--blue);
+    color: var(--white);
+    font-family:'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    cursor:pointer;
+    transition: background .2s ease;
+  }
+  .primary-btn:hover{ 
+    background: var(--blue-dark); 
+  }
+
+  .primary-btn:disabled{ 
+    background: #cbd2db; 
+    cursor:not-allowed; 
+  }
+
+  .back-link{
+    display:flex;
+    align-items:center;
+    gap: 6px;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--blue-dark);
+    cursor:pointer;
+    margin-bottom: 20px;
+    background:none;
+    border:none;
+  }
+
+  .back-link svg{ 
+    width: 16px; 
+    height:16px; 
+  }
+
+  .otp-target{
+    text-align:center;
+    font-size: 14.5px;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+
+  .otp-target span{ 
+    color: var(--blue-dark); 
+  }
+
+  .otp-inputs{
+    display:flex;
+    justify-content:space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .otp-inputs input{
+    width: 100%;
+    aspect-ratio: 1/1;
+    text-align:center;
+    font-size: 20px;
+    font-weight: 800;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    outline:none;
+    font-family:'Nunito', sans-serif;
+    color: var(--ink);
+  }
+
+  .otp-inputs input:focus{ 
+    border-color: var(--blue); 
+  }
+
+  .otp-error{
+    color: #e0685f;
+    font-size: 13px;
+    font-weight: 700;
+    text-align:center;
+    margin-bottom: 14px;
+    display:none;
+  }
+
+  .otp-error.show{ 
+    display:block; 
+  }
+
+  .resend-row{
+    text-align:center;
+    font-size: 13.5px;
+    font-weight:600;
+    color: var(--muted);
+    margin: 18px 0 4px;
+  }
+  .resend-row button{
+    background:none;
+    border:none;
+    color: var(--blue-dark);
+    font-weight: 800;
+    cursor:pointer;
+    text-decoration: underline;
+    font-size: 13.5px;
+  }
+  .resend-row button:disabled{
+    color: var(--muted);
+    cursor:not-allowed;
+    text-decoration:none;
+  }
+
+  .demo-note{
+    margin-top: 18px;
+    background: var(--cream-light);
+    border: 1.5px dashed var(--blue);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--blue-dark);
+    text-align:center;
+  }
+
+  .success-step{
+    text-align:center;
+    padding: 6px 0 4px;
+  }
+  .success-step svg{
+    width: 56px; height:56px;
+    color: #3fb27f;
+    margin: 0 auto 16px;
+  }
+  .success-step h2{ 
+    font-family:'Baloo 2', cursive; 
+    font-size: 22px;
+    margin-bottom: 8px; 
+  }
+
+  .success-step p{ 
+    font-size: 14.5px; 
+    color: var(--muted); 
+    font-weight:600; 
+    margin-bottom: 22px; 
+  }
+
+  .switch-auth{
+    text-align:center;
+    margin-top: 22px;
+    font-size: 14px;
+    font-weight:600;
+    color: var(--muted);
+  }
+  .switch-auth a{
+    color: var(--blue-dark);
+    font-weight: 800;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 480px){
+    .auth-card{ padding: 30px 22px 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-header">
+  <a href="FurryCorner.php" class="logo">
+    <img src="images/logo.png" alt="FurryCorner logo">
+  </a>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-card" id="authCard"></div>
+</div>
+
+<script src="furryCornerStorage.js"></script>
+<script>
+  const authCard = document.getElementById('authCard');
+  let pendingEmail = '';
+  let generatedCode = '';
+  let resendSeconds = 30;
+  let resendTimer = null;
+
+  function generateCode(){
+    return String(Math.floor(100000 + Math.random() * 900000));
+  }
+
+  function renderChooseStep(){
+    clearInterval(resendTimer);
+    authCard.innerHTML = `
+      <h1>Welcome back</h1>
+      <p class="sub">Sign in to continue to FurryCorner</p>
+
+      <button class="google-btn" id="googleBtn">
+        <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4c-7.7 0-14.4 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 44c5.4 0 10.3-2.1 14-5.5l-6.5-5.4C29.5 34.9 26.9 36 24 36c-5.3 0-9.7-3.1-11.3-7.5l-6.6 5.1C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.6l6.5 5.4C39.9 36.9 44 31 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="divider"><span>or</span></div>
+
+      <label class="field-label">Email address</label>
+      <input class="field" type="email" id="emailField" placeholder="you@example.com">
+      <div class="field-error" id="emailError">Please enter a valid email address.</div>
+
+      <label class="field-label">Password</label>
+      <input class="field" type="password" id="passwordField" placeholder="Enter your password">
+
+      <button class="primary-btn" id="continueEmailBtn">Sign in</button>
+
+      <div class="switch-auth">Don't have an account? <a href="signup.php">Sign up</a></div>
+    `;
+
+    document.getElementById('googleBtn').addEventListener('click', () => {
+      alert('Google sign-in is not connected yet — hook this up to a real OAuth provider (e.g. Google Identity Services).');
+    });
+
+    const emailField = document.getElementById('emailField');
+    const passwordField = document.getElementById('passwordField');
+    const emailError = document.getElementById('emailError');
+
+    document.getElementById('continueEmailBtn').addEventListener('click', () => {
+      const email = emailField.value.trim();
+      const password = passwordField.value;
+      const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      if (!isValid){
+        emailError.textContent = 'Please enter a valid email address.';
+        emailError.classList.add('show');
+        return;
+      }
+
+      if (!password || password.length < 8){
+        emailError.textContent = 'Please enter your password.';
+        emailError.classList.add('show');
+        return;
+      }
+      fetch("customerLogin.php",{
+
+    method:"POST",
+
+    headers:{
+        "Content-Type":"application/json"
+    },
+
+    body:JSON.stringify({
+
+        email:email,
+        password:password
+
+    })
+
+})
+
+
+.then(response=>response.json())
+
+
+.then(result=>{
+
+
+    if(result.status === "success"){
+
+        emailError.classList.remove("show");
+
+        // Save the whole user
+        localStorage.setItem(
+            "loggedInUser",
+            JSON.stringify(result.user)
+        );
+
+        // Save individual values
+        localStorage.setItem(
+            "loggedInUserId",
+            result.user.id
+        );
+
+        localStorage.setItem(
+            "loggedInName",
+            result.user.firstName + " " + result.user.lastName
+        );
+
+        localStorage.setItem(
+            "loggedInEmail",
+            result.user.email
+        );
+
+        renderSuccessStep();
+
+    }else{
+
+        emailError.textContent = result.message;
+        emailError.classList.add("show");
+
+    }
+
+
+});
+    });
+
+    emailField.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('continueEmailBtn').click();
+    });
+  }
+
+  function renderOtpStep(){
+    authCard.innerHTML = `
+      <button class="back-link" id="backBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+
+      <h1>Check your email</h1>
+      <p class="otp-target">We sent a 6-digit code to <span>${pendingEmail}</span></p>
+
+      <div class="otp-inputs" id="otpInputs">
+        ${Array.from({ length: 6 }).map((_, i) => `<input type="text" inputmode="numeric" maxlength="1" data-index="${i}">`).join('')}
+      </div>
+      <div class="otp-error" id="otpError">That code didn't match. Please try again.</div>
+
+      <button class="primary-btn" id="verifyBtn" disabled>Verify Code</button>
+
+      <div class="resend-row">
+        Didn't get a code? <button id="resendBtn" disabled>Resend (<span id="resendCount">30</span>s)</button>
+      </div>
+
+      <div class="demo-note">Demo mode — no real email is sent. Your code is: <strong>${generatedCode}</strong></div>
+    `;
+
+    document.getElementById('backBtn').addEventListener('click', renderChooseStep);
+
+    const inputs = Array.from(document.querySelectorAll('#otpInputs input'));
+    const verifyBtn = document.getElementById('verifyBtn');
+    const otpError = document.getElementById('otpError');
+
+    function checkComplete(){
+      const complete = inputs.every(i => i.value.trim().length === 1);
+      verifyBtn.disabled = !complete;
+    }
+
+    inputs.forEach((input, idx) => {
+      input.addEventListener('input', () => {
+        input.value = input.value.replace(/[^0-9]/g, '');
+        if (input.value && idx < inputs.length - 1){
+          inputs[idx + 1].focus();
+        }
+        otpError.classList.remove('show');
+        checkComplete();
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && idx > 0){
+          inputs[idx - 1].focus();
+        }
+      });
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const digits = (e.clipboardData.getData('text') || '').replace(/[^0-9]/g, '').split('');
+        inputs.forEach((inp, i) => { inp.value = digits[i] || ''; });
+        checkComplete();
+        const next = inputs[Math.min(digits.length, inputs.length - 1)];
+        if (next) next.focus();
+      });
+    });
+
+    verifyBtn.addEventListener('click', () => {
+      const entered = inputs.map(i => i.value).join('');
+      if (entered === generatedCode){
+        renderSuccessStep();
+      } else {
+        otpError.classList.add('show');
+        inputs.forEach(i => i.value = '');
+        inputs[0].focus();
+        verifyBtn.disabled = true;
+      }
+    });
+
+    resendSeconds = 30;
+    const resendBtn = document.getElementById('resendBtn');
+    const resendCount = document.getElementById('resendCount');
+
+    clearInterval(resendTimer);
+    resendTimer = setInterval(() => {
+      resendSeconds--;
+      resendCount.textContent = resendSeconds;
+      if (resendSeconds <= 0){
+        clearInterval(resendTimer);
+        resendBtn.disabled = false;
+        resendBtn.textContent = 'Resend code';
+      }
+    }, 1000);
+
+    resendBtn.addEventListener('click', () => {
+      if (resendBtn.disabled) return;
+      generatedCode = generateCode();
+      renderOtpStep();
+    });
+
+    inputs[0].focus();
+  }
+
+  function renderSuccessStep(){
+    clearInterval(resendTimer);
+    authCard.innerHTML = `
+      <div class="success-step">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>
+        <h2>You're signed in!</h2>
+        <p>Welcome back to FurryCorner.</p>
+        <a href="FurryCorner.php" class="primary-btn" style="display:block; text-align:center; line-height:50px; text-decoration:none;">Continue to FurryCorner</a>
+      </div>
+    `;
+  }
+
+  renderChooseStep();
+</script>
+
+</body>
+</html>
