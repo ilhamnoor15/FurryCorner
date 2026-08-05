@@ -158,19 +158,26 @@ h1,h2,h3,.brand{
 .nav-icons{
   display:flex;
   align-items:center;
+  justify-content:center;
   gap:22px;
+  height:38px;
 }
+
+
+.nav-icons > a,
+.nav-icons > span,
+.nav-icons > button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:38px;
+}
+
 
 .nav-icons svg{
   width:22px;
   height:22px;
-  cursor:pointer;
-}
-
-.menu-toggle{
-  display:none;
-  background:none;
-  border:none;
+  display:block;
   cursor:pointer;
 }
 
@@ -814,10 +821,6 @@ footer{
     display:none;
   }
 
-  .menu-toggle{
-    display:block;
-  }
-
   .product-container{
     grid-template-columns:1fr;
 
@@ -921,48 +924,13 @@ footer{
         </span>
       </span>
     </a>
-    
-    <button class="menu-toggle" aria-label="Menu">
-      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
+
   </div>
 </nav>
 
     <!-- MENU -->
 
-    <button
-      class="menu-toggle"
-      aria-label="Menu">
-
-      <svg
-        viewBox="0 0 24 24"
-        width="26"
-        height="26"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2">
-
-        <line
-          x1="3"
-          y1="6"
-          x2="21"
-          y2="6"/>
-
-        <line
-          x1="3"
-          y1="12"
-          x2="21"
-          y2="12"/>
-
-        <line
-          x1="3"
-          y1="18"
-          x2="21"
-          y2="18"/>
-
-      </svg>
-
-    </button>
+   
 
   </div>
 
@@ -1551,7 +1519,6 @@ cartOverlay.addEventListener(
 "click",
 closeCartDrawer
 );
-
 /* =========================
    ADD TO CART
 ========================= */
@@ -1580,22 +1547,44 @@ document
         );
 
 
+      // CHECK STOCK
+      const newQuantity =
+        existingItem
+        ? existingItem.quantity + quantity
+        : quantity;
+
+
+      if(newQuantity > product.stock){
+
+        alert(
+          "Only " + product.stock + " item(s) available."
+        );
+
+        return;
+
+      }
+
+
       if(existingItem){
 
-        existingItem.quantity +=
-          quantity;
+        existingItem.quantity =
+          newQuantity;
 
       }else{
 
         cart.push({
 
-          id:product.id,
+          id: product.id,
 
-          name:product.name,
+          name: product.name,
 
-          price:product.price,
+          price: product.price,
 
-          quantity:quantity
+          image: product.image,
+
+          stock: product.stock,
+
+          quantity: quantity
 
         });
 
@@ -1603,9 +1592,10 @@ document
 
 
       localStorage.setItem(
-      'cart',
-      JSON.stringify(cart)
+        'cart',
+        JSON.stringify(cart)
       );
+
 
       updateCartBadge();
 
@@ -1613,14 +1603,9 @@ document
 
       openDrawer();
 
-      /*
-        NO ALERT
-        NO LEFT POPUP
-        NO RIGHT POPUP
-      */
-
     }
   );
+
 
 
 /* =========================
@@ -1651,22 +1636,44 @@ document
         );
 
 
+      const newQuantity =
+        existingItem
+        ? existingItem.quantity + quantity
+        : quantity;
+
+
+      // CHECK STOCK
+      if(newQuantity > product.stock){
+
+        alert(
+          "Only " + product.stock + " item(s) available."
+        );
+
+        return;
+
+      }
+
+
       if(existingItem){
 
-        existingItem.quantity +=
-          quantity;
+        existingItem.quantity =
+          newQuantity;
 
       }else{
 
         cart.push({
 
-          id:product.id,
+          id: product.id,
 
-          name:product.name,
+          name: product.name,
 
-          price:product.price,
+          price: product.price,
 
-          quantity:quantity
+          image: product.image,
+
+          stock: product.stock,
+
+          quantity: quantity
 
         });
 
@@ -1679,17 +1686,11 @@ document
       );
 
 
-      /*
-        DIRECTLY GO TO CART PAGE
-      */
-
       window.location.href =
         'cart.php';
 
-    }
+    } 
   );
-
-
 /* =========================
    UPDATE CART BADGE
 ========================= */

@@ -1306,7 +1306,8 @@ select{
    account system. Wire it up to your actual auth backend before going live.
 ========================= */
 
-let isSignedIn = false;
+let isSignedIn =
+  localStorage.getItem("loggedInUser") !== null;
 
 const signinBackdrop = document.getElementById('signinBackdrop');
 const signinEmail = document.getElementById('signinEmail');
@@ -1329,14 +1330,30 @@ function closeSigninModal(){
 function handleProceedToCheckout(){
 
   if(cart.length === 0){
-    showEmptyCartAlert('Your cart is empty. Add some products before checking out.');
+
+    showEmptyCartAlert(
+      'Your cart is empty. Add some products before checking out.'
+    );
+
     return;
+
   }
 
-  if(!isSignedIn){
+
+  const loggedUser =
+    JSON.parse(
+      localStorage.getItem("loggedInUser")
+    );
+
+
+  if(!loggedUser){
+
     openSigninModal();
+
     return;
+
   }
+
 
   goToStep(2);
 
@@ -1359,16 +1376,24 @@ function showEmptyCartAlert(message){
 
 signinSubmitBtn.addEventListener('click', () => {
 
-  const email = signinEmail.value.trim();
-  const password = signinPassword.value.trim();
+  const loggedUser =
+    JSON.parse(
+      localStorage.getItem("loggedInUser")
+    );
 
-  if(!email || !password){
+
+  if(!loggedUser){
+
+    signinError.textContent =
+      "Please sign in first.";
+
     signinError.classList.add('show');
+
     return;
+
   }
 
-  signinError.classList.remove('show');
-  isSignedIn = true;
+
   closeSigninModal();
 
   goToStep(2);
@@ -1610,6 +1635,22 @@ function changeQuantity(id, amount){
 
   if(!item){
     return;
+  }
+
+
+  // Prevent exceeding stock
+  if(amount > 0){
+
+    if(item.quantity + amount > item.stock){
+
+      alert(
+        "Only " + item.stock + " item(s) available."
+      );
+
+      return;
+
+    }
+
   }
 
 

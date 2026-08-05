@@ -137,17 +137,31 @@ while($row = mysqli_fetch_assoc($result)){
     color:var(--blue-dark); 
   }
 
-  .nav-icons{ 
-    display:flex;
-    align-items:center; 
-    gap: 22px; 
-  }
+ .nav-icons{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:22px;
+  height:38px;
+}
 
-  .nav-icons svg{ 
-    width: 22px; 
-    height: 22px; 
-    cursor:pointer; 
-  }
+
+.nav-icons > a,
+.nav-icons > span,
+.nav-icons > button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:38px;
+}
+
+
+.nav-icons svg{
+  width:22px;
+  height:22px;
+  display:block;
+  cursor:pointer;
+}
 
   .cart-link{
   position:relative;
@@ -194,14 +208,6 @@ while($row = mysqli_fetch_assoc($result)){
 
   border:2px solid var(--white);
 }
-
-
-  .menu-toggle{ 
-    display:none; 
-    background:none;
-    border:none; 
-    cursor:pointer; 
-  }
 
   .page-header{
     max-width: 1200px;
@@ -914,7 +920,6 @@ while($row = mysqli_fetch_assoc($result)){
   @media (max-width: 900px){
     .nav-left{ gap: 20px; }
     .nav-links{ display:none; }
-    .menu-toggle{ display:block; }
     .products-layout{ grid-template-columns: 1fr; }
     .product-grid{ grid-template-columns: repeat(2, 1fr); }
     .footer-grid{ grid-template-columns: 1fr 1fr; }
@@ -994,9 +999,6 @@ while($row = mysqli_fetch_assoc($result)){
       </span>
     </a>
 
-    <button class="menu-toggle" aria-label="Menu">
-      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
   </div>
 </nav>
 
@@ -1438,7 +1440,8 @@ if(keyword){
       id:product.id,
       name:product.name,
       price:product.price,
-      quantity:1
+      quantity:1,
+      stock: product.stock
 
     });
 

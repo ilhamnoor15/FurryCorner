@@ -102,21 +102,34 @@ include "db.php";
   .nav-icons{
     display:flex;
     align-items:center;
-    gap: 22px;
+    justify-content:center;
+    gap:22px;
+    height:38px;
   }
 
+
+  .nav-icons > a,
+  .nav-icons > span,
+  .nav-icons > button{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:38px;
+  }
+
+
   .nav-icons svg{
-    width: 22px;
-    height: 22px;
+    width:22px;
+    height:22px;
+    display:block;
     cursor:pointer;
   }
+
 
   .menu-toggle{
     display:none;
-    background:none;
-    border:none;
-    cursor:pointer;
   }
+
 
    .cart-link{
   position:relative;
@@ -247,7 +260,7 @@ include "db.php";
   .card-thumb img{
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
   }
  
@@ -606,7 +619,6 @@ include "db.php";
   @media (max-width: 900px){
     .nav-left{ gap: 20px; }
     .nav-links{ display:none; }
-    .menu-toggle{ display:block; }
     .hero{ flex-direction:column; text-align:center; padding-top:40px; }
     .hero-text{ padding-bottom: 0; }
     .hero-text p{ margin: 0 auto; }
@@ -702,18 +714,6 @@ include "db.php";
         0
       </span>
     </a>
-    <button class="menu-toggle" aria-label="Menu">
-      <svg viewBox="0 0 24 24" 
-            width="26" 
-            height="26" 
-            fill="none" 
-            stroke="currentColor" 
-            stroke-width="2">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-      </svg>
-    </button>
   </div>
 </nav>
 

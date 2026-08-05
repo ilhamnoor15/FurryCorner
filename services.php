@@ -39,149 +39,158 @@ while ($row = mysqli_fetch_assoc($result)) {
     --muted: #9aa1ad;
   }
 
-  *{ box-sizing: border-box; margin:0; padding:0; }
-  html{ scroll-behavior: smooth; }
+    *{ box-sizing: border-box; margin:0; padding:0; }
+    html{ scroll-behavior: smooth; }
 
-  body{
-    font-family:'Nunito', sans-serif;
-    color: var(--ink);
-    background:#fff;
-    line-height:1.5;
-  }
+    body{
+      font-family:'Nunito', sans-serif;
+      color: var(--ink);
+      background:#fff;
+      line-height:1.5;
+    }
 
-  h1,h2,h3{ font-family:'Baloo 2', cursive; }
-  a{ text-decoration:none; color:inherit; }
-  img{ max-width:100%; display:block; }
+    h1,h2,h3{ font-family:'Baloo 2', cursive; }
+    a{ text-decoration:none; color:inherit; }
+    img{ max-width:100%; display:block; }
 
-  .container{
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 40px;
-  }
+    .container{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
 
-  .navbar{
-    position: sticky;
-    top: 0; left: 0; right: 0;
-    z-index: 1000;
-    background: var(--white);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding: 14px 40px;
-    box-shadow: 0 2px 0 rgba(0,0,0,0.04);
-    transition: box-shadow .25s ease, padding .25s ease;
-  }
-  .navbar.scrolled{ 
-    box-shadow: 0 6px 18px rgba(0,0,0,0.10); 
-    padding: 10px 40px; 
-  }
+    .navbar{
+      position: sticky;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: var(--white);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 14px 40px;
+      box-shadow: 0 2px 0 rgba(0,0,0,0.04);
+      transition: box-shadow .25s ease, padding .25s ease;
+    }
+    .navbar.scrolled{ 
+      box-shadow: 0 6px 18px rgba(0,0,0,0.10); 
+      padding: 10px 40px; 
+    }
 
-  .nav-left{ 
-    display:flex; 
-    align-items:center; 
-    gap: 44px; 
-  }
+    .nav-left{ 
+      display:flex; 
+      align-items:center; 
+      gap: 44px; 
+    }
 
-  .logo{ 
-    display:flex; 
-    align-items:center; 
-    gap:8px; 
-    font-weight:700; 
-    font-size: 14px; 
-    color: var(--blue-dark); 
-  }
+    .logo{ 
+      display:flex; 
+      align-items:center; 
+      gap:8px; 
+      font-weight:700; 
+      font-size: 14px; 
+      color: var(--blue-dark); 
+    }
 
-  .logo img{ 
-    width:38px; 
-    height:38px; 
-    object-fit:contain; 
-  }
+    .logo img{ 
+      width:38px; 
+      height:38px; 
+      object-fit:contain; 
+    }
 
-  .nav-links{ 
-    display:flex; 
-    align-items:center; 
-    gap: 32px; 
-    list-style:none; 
-    font-weight:700; 
-    font-size: 15px; 
-  }
+    .nav-links{ 
+      display:flex; 
+      align-items:center; 
+      gap: 32px; 
+      list-style:none; 
+      font-weight:700; 
+      font-size: 15px; 
+    }
 
-  .nav-links li a{ 
-    display:flex; 
-    align-items:center; 
-    gap:4px; 
-    opacity:.9; 
-  }
+    .nav-links li a{ 
+      display:flex; 
+      align-items:center; 
+      gap:4px; 
+      opacity:.9; 
+    }
 
-  .nav-links li a:hover{ 
-    opacity:1; 
-    color:var(--blue-dark); 
-  }
+    .nav-links li a:hover{ 
+      opacity:1; 
+      color:var(--blue-dark); 
+    }
 
-  .nav-links li a.current{ 
-    opacity:1; 
-    color:var(--blue-dark); 
-  }
+    .nav-links li a.current{ 
+      opacity:1; 
+      color:var(--blue-dark); 
+    }
 
-  .nav-icons{ 
-    display:flex; 
-    align-items:center; 
-    gap: 22px; 
-  }
+    .nav-icons{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:22px;
+      height:38px;
+    }
 
-  .nav-icons svg{ 
-    width: 22px; 
-    height: 22px; 
-    cursor:pointer; 
-  }
 
-  .cart-icon-wrap{
-    position:relative;
-    display:flex;
+    .nav-icons > a,
+    .nav-icons > span,
+    .nav-icons > button{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:38px;
+    }
+
+
+    .nav-icons svg{
+      width:22px;
+      height:22px;
+      display:block;
+      cursor:pointer;
+    }
+
+
+
+    .cart-icon-wrap{
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:22px;
+      height:22px;
+      cursor:pointer;
+    }
+
+    .cart-icon-wrap svg{
+      width:22px;
+      height:22px;
+    }
+
+    .cart-badge{
+    position:absolute;
+    top:-9px;
+    right:-10px;
+
+    min-width:18px;
+    height:18px;
+
+    padding:0 4px;
+
+    display:none;
     align-items:center;
     justify-content:center;
-    width:22px;
-    height:22px;
-    cursor:pointer;
-  }
 
-  .cart-icon-wrap svg{
-    width:22px;
-    height:22px;
-  }
+    border-radius:50%;
 
-  .cart-badge{
-  position:absolute;
-  top:-9px;
-  right:-10px;
+    background:var(--blue-dark);
+    color:#fff;
 
-  min-width:18px;
-  height:18px;
+    font-size:10px;
+    font-weight:800;
+    line-height:1;
 
-  padding:0 4px;
-
-  display:none;
-  align-items:center;
-  justify-content:center;
-
-  border-radius:50%;
-
-  background:var(--blue-dark);
-  color:#fff;
-
-  font-size:10px;
-  font-weight:800;
-  line-height:1;
-
-  border:2px solid var(--white);
-}
-
-  .menu-toggle{ 
-    display:none; 
-    background:none; 
-    border:none; 
-    cursor:pointer; 
-  }
+    border:2px solid var(--white);
+    }
 
   .search-overlay{
       position:fixed;
@@ -684,7 +693,6 @@ while ($row = mysqli_fetch_assoc($result)) {
   @media (max-width: 900px){
     .nav-left{ gap: 20px; }
     .nav-links{ display:none; }
-    .menu-toggle{ display:block; }
     .hero{ flex-direction:column; text-align:center; padding: 60px 24px; min-height:auto; }
     .hero-text{ max-width:100%; }
     .hero-text p{ margin-left:auto; margin-right:auto; }
@@ -746,9 +754,6 @@ while ($row = mysqli_fetch_assoc($result)) {
       <!-- CART NOTIFICATION -->
       <span class="cart-badge" id="cartBadge">0</span>
     </a>
-    <button class="menu-toggle" aria-label="Menu">
-      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-    </button>
   </div>
 </nav>
 
