@@ -279,6 +279,33 @@ img{ max-width:100%; display:block; }
 .badge.processing { background: #f3e8ff; color: #9333ea; } 
 .badge.refunded { background: #ffedd5; color: #ea580c; }  
 
+.status-select-wrap{
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.status-select{
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    padding-right: 28px;
+}
+.status-select:focus{ outline: 2px solid var(--blue); }
+
+.status-select-chevron{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+    opacity: .65;
+}
+
 .date-cell{
     display: inline-flex;
     align-items: center;
@@ -326,12 +353,13 @@ img{ max-width:100%; display:block; }
     width: 100%;
     height: 100%;
 
-    background: rgba(0,0,0,0.5);
+    background: rgba(31,36,48,0.55);
 
     justify-content: center;
     align-items: center;
 
     z-index: 9999;
+    padding: 20px;
 }
 
 .modal.open {
@@ -339,34 +367,55 @@ img{ max-width:100%; display:block; }
 }
 
 .modal-panel {
-    background: white;
-    width: 500px;
-    max-width: 90%;
-    max-height: 80vh;
+    background: var(--white);
+    width: 560px;
+    max-width: 100%;
+    max-height: 85vh;
 
     overflow-y: auto;
 
-    padding: 30px;
+    padding: 0;
 
-    border-radius: 15px;
+    border-radius: 20px;
 
     position: relative;
+
+    box-shadow: 0 24px 60px rgba(31,36,48,0.25);
 }
 
 .modal-close {
     position: absolute;
 
-    top: 15px;
+    top: 18px;
     right: 20px;
 
-    font-size: 30px;
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    color: var(--white);
+
+    font-size: 24px;
+    line-height: 1;
 
     cursor: pointer;
+    transition: background .2s ease;
+    z-index: 2;
+}
+
+.modal-close:hover{
+    background: rgba(255,255,255,0.32);
 }
 
   .order-info{
 
-      margin-top:20px;
+      margin-top:0;
+      padding: 0 0 26px;
 
   }
 
@@ -376,6 +425,138 @@ img{ max-width:100%; display:block; }
       margin:10px 0;
 
   }
+
+.order-detail-header{
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+    color: var(--white);
+    padding: 26px 30px 22px;
+    border-radius: 20px 20px 0 0;
+}
+
+.order-detail-eyebrow{
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    opacity: .85;
+    margin-bottom: 6px;
+}
+
+.order-detail-id{
+    font-family: 'Baloo 2', cursive;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.order-detail-status{
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.22);
+    color: var(--white);
+}
+
+.order-detail-body{
+    padding: 24px 30px 30px;
+}
+
+.order-detail-section{
+    background: var(--cream-light);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+}
+
+.order-detail-section h4{
+    font-family: 'Baloo 2', cursive;
+    font-size: 14px;
+    color: var(--blue-dark);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: 12px;
+}
+
+.order-detail-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 20px;
+}
+
+.order-detail-grid .span-2{
+    grid-column: 1 / -1;
+}
+
+.order-detail-field-label{
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: #8b93a3;
+    margin-bottom: 3px;
+}
+
+.order-detail-field-value{
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.order-item-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e8e2d4;
+}
+
+.order-item-row:last-child{
+    border-bottom: none;
+}
+
+.order-item-name{
+    font-weight: 700;
+    font-size: 14.5px;
+}
+
+.order-item-qty{
+    font-size: 12.5px;
+    color: #8b93a3;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.order-item-price{
+    font-weight: 800;
+    font-size: 14.5px;
+    color: var(--blue-dark);
+    white-space: nowrap;
+}
+
+.order-total-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--blue);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 4px;
+}
+
+.order-total-label{
+    font-family: 'Baloo 2', cursive;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.order-total-value{
+    font-family: 'Baloo 2', cursive;
+    font-size: 20px;
+    font-weight: 800;
+}
 
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
@@ -481,8 +662,6 @@ img{ max-width:100%; display:block; }
             &times;
         </span>
 
-        <h2>Order Details</h2>
-
         <div id="orderDetails"></div>
 
     </div>
@@ -562,8 +741,11 @@ ${order.payment}
 
 
 <td>
-<span class="badge ${order.status.toLowerCase()}">
-${order.status}
+<span class="status-select-wrap">
+<select class="status-select badge ${order.status.toLowerCase()}" data-id="${order.id}">
+${["Pending","Processing","Shipped","Delivered","Cancelled"].map(s=>`<option value="${s}" ${s===order.status?"selected":""}>${s}</option>`).join("")}
+</select>
+<svg class="status-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
 </span>
 </td>
 
@@ -690,6 +872,61 @@ document.addEventListener("click", function(e){
 
 });
 
+document.addEventListener("change", function(e){
+
+    if(e.target.classList.contains("status-select")){
+
+        const select = e.target;
+        const orderId = select.dataset.id;
+        const newStatus = select.value;
+
+        // remember previous badge class in case we need to revert
+        const previousClass = select.className;
+
+        fetch("updateOrderStatus.php", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+
+            body: "order_id=" + encodeURIComponent(orderId) +
+                  "&status=" + encodeURIComponent(newStatus)
+
+        })
+
+        .then(response => response.text())
+
+        .then(result => {
+
+            if(result.trim() === "success"){
+
+                select.className = "status-select badge " + newStatus.toLowerCase();
+
+            }else{
+
+                alert("Failed to update order status: " + result);
+                select.className = previousClass;
+                loadOrders();
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+            alert("Server error while updating order status.");
+            select.className = previousClass;
+            loadOrders();
+
+        });
+
+    }
+
+});
+
 document.addEventListener("click",function(e){
 
 
@@ -710,56 +947,69 @@ fetch("getOrderDetails.php?id="+id)
 
 document.getElementById("orderDetails").innerHTML = `
 
+<div class="order-detail-header">
+  <div class="order-detail-eyebrow">Order Details</div>
+  <div class="order-detail-id">#${order.order_id}</div>
+  <span class="order-detail-status">${order.status || "Pending"}</span>
+</div>
 
-<p>
-<b>Customer:</b>
-${order.first_name}
-${order.last_name}
-</p>
+<div class="order-detail-body">
 
+  <div class="order-detail-section">
+    <h4>Customer &amp; Shipping</h4>
+    <div class="order-detail-grid">
+      <div>
+        <div class="order-detail-field-label">Name</div>
+        <div class="order-detail-field-value">${order.first_name} ${order.last_name}</div>
+      </div>
+      <div>
+        <div class="order-detail-field-label">Phone</div>
+        <div class="order-detail-field-value">${order.phone}</div>
+      </div>
+      <div class="span-2">
+        <div class="order-detail-field-label">Address</div>
+        <div class="order-detail-field-value">${order.address}</div>
+      </div>
+      <div>
+        <div class="order-detail-field-label">City</div>
+        <div class="order-detail-field-value">${order.city}</div>
+      </div>
+      <div>
+        <div class="order-detail-field-label">Province</div>
+        <div class="order-detail-field-value">${order.province}</div>
+      </div>
+      <div>
+        <div class="order-detail-field-label">Postal Code</div>
+        <div class="order-detail-field-value">${order.postal_code}</div>
+      </div>
+      <div>
+        <div class="order-detail-field-label">Payment Method</div>
+        <div class="order-detail-field-value">${order.payment_method}</div>
+      </div>
+    </div>
+  </div>
 
-<p>
-<b>Address:</b>
-${order.address},
-${order.city},
-${order.province}
-</p>
+  <div class="order-detail-section">
+    <h4>Products</h4>
 
+    ${order.items.map(item => `
+      <div class="order-item-row">
+        <div>
+          <div class="order-item-name">${item.product_name}</div>
+          <div class="order-item-qty">Qty: ${item.quantity} &times; ₱${Number(item.price).toLocaleString('en-PH',{minimumFractionDigits:2})}</div>
+        </div>
+        <div class="order-item-price">₱${Number(item.item_total).toLocaleString('en-PH',{minimumFractionDigits:2})}</div>
+      </div>
+    `).join("")}
 
-<p>
-<b>Phone:</b>
-${order.phone}
-</p>
+  </div>
 
+  <div class="order-total-row">
+    <span class="order-total-label">Total</span>
+    <span class="order-total-value">₱${Number(order.total_amount).toLocaleString('en-PH',{minimumFractionDigits:2})}</span>
+  </div>
 
-<p>
-<b>Payment:</b>
-${order.payment_method}
-</p>
-
-
-<h3>Products</h3>
-
-
-${order.items.map(item=>`
-
-<p>
-${item.product_name}
- x ${item.quantity}
-
- - ₱${item.item_total}
-
-</p>
-
-
-`).join("")}
-
-
-<p>
-<b>Total:</b>
-₱${order.total_amount}
-</p>
-
+</div>
 
 `;
 

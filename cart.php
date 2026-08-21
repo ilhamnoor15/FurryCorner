@@ -486,40 +486,7 @@ select{
 
 
 /* =========================
-   SUCCESS
-========================= */
 
-.success{
-  text-align:center;
-  padding:60px 30px;
-}
-
-.success-icon{
-  width:70px;
-  height:70px;
-  border-radius:50%;
-  background:var(--blue);
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:35px;
-  margin:0 auto 20px;
-}
-
-.success h2{
-  font-family:'Baloo 2',cursive;
-  font-size:30px;
-  margin-bottom:10px;
-}
-
-.success p{
-  color:var(--gray);
-  margin-bottom:20px;
-}
-
-
-/* =========================
    EMPTY CART
 ========================= */
 
@@ -972,6 +939,11 @@ select{
           </div>
 
           <div class="form-group full">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="you@example.com">
+          </div>
+
+          <div class="form-group full">
             <label>Address</label>
             <input type="text" id="address" placeholder="House number, street, barangay">
           </div>
@@ -1188,6 +1160,7 @@ select{
           <h3>Shipping Information</h3>
 
           <p id="reviewName"></p>
+          <p id="reviewEmail"></p>
           <p id="reviewAddress"></p>
           <p id="reviewCity"></p>
           <p id="reviewPhone"></p>
@@ -1258,53 +1231,12 @@ select{
 
   </section>
 
-
-  <!-- =========================
-       SUCCESS
-  ========================= -->
-
-  <section
-    class="checkout-section"
-    id="successStep">
-
-    <div class="box success">
-
-      <div class="success-icon">
-        ✓
-      </div>
-
-      <h2>Order Placed Successfully!</h2>
-
-      <p>
-        Thank you for shopping with FurryCorner PH.
-      </p>
-
-      <p>
-        Your order has been received and is being processed.
-      </p>
-
-      <a
-        href="FurryCorner.php"
-        class="shop-btn">
-
-        Continue Shopping
-
-      </a>
-
-    </div>
-
-  </section>
+<!-- Order confirmation now lives on its own page: order-confirmation.php -->
 
 </main>
 
 <script src="shared-order.js"></script>
 <script>
-
-/* =========================
-   SIGN-IN GATE
-   NOTE: front-end only — this does not verify credentials against a real
-   account system. Wire it up to your actual auth backend before going live.
-========================= */
 
 let isSignedIn =
   localStorage.getItem("loggedInUser") !== null;
@@ -1873,6 +1805,7 @@ function validateShipping(){
 
     'firstName',
     'lastName',
+    'email',
     'address',
     'city',
     'province',
@@ -1929,6 +1862,11 @@ function prepareReview(){
       'address'
     ).value;
 
+  const email =
+    document.getElementById(
+      'email'
+    ).value;
+
   const city =
     document.getElementById(
       'city'
@@ -1954,6 +1892,12 @@ function prepareReview(){
     'reviewName'
   ).textContent =
     firstName + ' ' + lastName;
+
+
+  document.getElementById(
+    'reviewEmail'
+  ).textContent =
+    email;
 
 
   document.getElementById(
@@ -2028,60 +1972,99 @@ function prepareReview(){
 
 }
 
-
 /* =========================
    PLACE ORDER
 ========================= */
 
 function placeOrder(){
 
-  const stockResult = window.FurryCornerStorage.deductStock(cart);
+  /* =========================
+     CHECK LOGIN
+  ========================= */
 
-  if (!stockResult.ok) {
-    alert(`Not enough stock for ${stockResult.insufficient.join(', ')}.`);
+  const loggedUser =
+    JSON.parse(
+      localStorage.getItem("loggedInUser")
+    );
+
+  if(!loggedUser){
+
+    alert("Please sign in before placing your order.");
+
     return;
+
   }
+
+
+  /* =========================
+     GET USER ID
+  ========================= */
+
+  const userId =
+    loggedUser.id || loggedUser.user_id;
+
+  if(!userId){
+
+    alert("Unable to identify your account. Please sign in again.");
+
+    return;
+
+  }
+
+
+  /* =========================
+     CHECK STOCK
+  ========================= */
+
+  const stockResult =
+    window.FurryCornerStorage.deductStock(cart);
+
+  if(!stockResult.ok){
+
+    alert(
+      `Not enough stock for ${stockResult.insufficient.join(', ')}.`
+    );
+
+    return;
+
+  }
+
+
+  /* =========================
+     CREATE ORDER DATA
+  ========================= */
 
   const order = {
 
-    items:cart,
+      user_id: loggedUser.id,
 
-    shipping:{
+      items: cart,
+
+      shipping: {
 
       firstName:
-        document.getElementById(
-          'firstName'
-        ).value,
+        document.getElementById('firstName').value,
 
       lastName:
-        document.getElementById(
-          'lastName'
-        ).value,
+        document.getElementById('lastName').value,
+
+      email:
+        document.getElementById('email').value,
 
       address:
-        document.getElementById(
-          'address'
-        ).value,
+        document.getElementById('address').value,
 
       city:
-        document.getElementById(
-          'city'
-        ).value,
+        document.getElementById('city').value,
 
       province:
-        document.getElementById(
-          'province'
-        ).value,
+        document.getElementById('province').value,
 
       postal:
-        document.getElementById(
-          'postal'
-        ).value,
+        document.getElementById('postal').value,
 
       phone:
-        document.getElementById(
-          'phone'
-        ).value
+        document.getElementById('phone').value
 
     },
 
@@ -2090,106 +2073,97 @@ function placeOrder(){
         'input[name="payment"]:checked'
       ).value,
 
-    subtotal:getSubtotal(),
+    subtotal: getSubtotal(),
 
-    shippingFee:SHIPPING_FEE,
+    shippingFee: SHIPPING_FEE,
 
-    total:getTotal(),
+    total: getTotal(),
 
-    date:new Date().toISOString()
+    date: new Date().toISOString()
 
   };
 
 
+  /* =========================
+     SAVE ORDER TO DATABASE
+  ========================= */
+
   fetch("saveOrder.php", {
 
-    method:"POST",
+    method: "POST",
 
-    headers:{
-        "Content-Type":"application/json"
+    headers: {
+      "Content-Type": "application/json"
     },
 
     body: JSON.stringify(order)
 
-})
+  })
 
-.then(response=>response.json())
+  .then(response => response.json())
 
-.then(data=>{
+  .then(data => {
 
-    if(data.success){
-
-        localStorage.removeItem('cart');
-
-        cart=[];
-
-        document.querySelectorAll(
-          '.checkout-section'
-        ).forEach(section=>{
-          section.classList.remove('active');
-        });
+    console.log("saveOrder response:", data);
 
 
-        document
-        .getElementById('successStep')
-        .classList.add('active');
+    if(!data.success){
 
+      alert(
+        data.message ||
+        "Unable to place order."
+      );
+
+      return;
 
     }
 
-});
 
-  localStorage.setItem(
-    'lastOrder',
-    JSON.stringify(savedOrder)
-  );
+    /* =========================
+       SAVE LAST ORDER
+     ========================= */
 
+    localStorage.setItem(
+      "lastOrder",
+      JSON.stringify({
 
-  /* Clear cart after order */
+        ...order,
 
-  localStorage.removeItem(
-    'cart'
-  );
+        order_id: data.order_id
 
-  cart = [];
-
-
-  document.querySelectorAll(
-    '.checkout-section'
-  ).forEach(section => {
-
-    section.classList.remove(
-      'active'
+      })
     );
 
-  });
+
+    /* =========================
+       CLEAR CART
+     ========================= */
+
+    localStorage.removeItem("cart");
+
+    cart = [];
 
 
-  document
-    .getElementById('successStep')
-    .classList.add('active');
+    /* =========================
+       GO TO CONFIRMATION PAGE
+     ========================= */
 
+    window.location.href =
+      "order-confirmation.php";
 
-  document.querySelectorAll(
-    '.step'
-  ).forEach(step => {
+  })
 
-    step.classList.add(
-      'completed'
+  .catch(error => {
+
+    console.error(
+      "Order error:",
+      error
     );
 
-    step.classList.remove(
-      'active'
+    alert(
+      "Unable to save your order. Please try again."
     );
 
-  });
-
-
-  updateCartBadge();
-
-  window.scrollTo({
-    top:0,
-    behavior:'smooth'
   });
 
 }
@@ -2249,4 +2223,3 @@ updateTotals();
 
 </body>
 </html>
-

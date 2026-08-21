@@ -39,10 +39,11 @@ window.FurryCornerStorage = {
         };
     },
 
-    sendVerificationCode(email, code){
+    sendVerificationCode(email, code, templateId){
         const config = this.emailApiConfig();
+        const finalTemplateId = templateId || config.templateId;
         const placeholders = ['service_abc1234', 'template_xyz5678', 'user_L9876543210abcdef'];
-        if (!config.serviceId || !config.templateId || !config.publicKey || placeholders.includes(config.serviceId) || placeholders.includes(config.templateId) || placeholders.includes(config.publicKey)) {
+        if (!config.serviceId || !finalTemplateId || !config.publicKey || placeholders.includes(config.serviceId) || placeholders.includes(finalTemplateId) || placeholders.includes(config.publicKey)) {
             throw new Error('EmailJS is not configured. Please update furryCornerStorage.js with your EmailJS service, template, and public key.');
         }
 
@@ -58,7 +59,7 @@ window.FurryCornerStorage = {
         const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
         const formattedTime = expiresAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-        return emailjs.send(config.serviceId, config.templateId, {
+        return emailjs.send(config.serviceId, finalTemplateId, {
             user_email: email,
             email: email,
             to_email: email,

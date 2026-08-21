@@ -1,7 +1,6 @@
 <?php
 include "db.php";
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -660,7 +659,7 @@ include "db.php";
           <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
     </svg>
 
-    <a href="signin.php">
+    <a href="signin.php" id="profileLink">
       <svg viewBox="0 0 24 24" 
       fill="none" 
       stroke="currentColor" 
@@ -1251,6 +1250,17 @@ window.addEventListener(
 
   }
 );
+
+const profileLink = document.getElementById("profileLink");
+
+const loggedUser = localStorage.getItem("loggedInUser");
+
+if (loggedUser) {
+    profileLink.href = "profile.php";
+} else {
+    profileLink.href = "signin.php";
+}
+
 </script>
 
 </body>
