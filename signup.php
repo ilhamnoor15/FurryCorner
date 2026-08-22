@@ -479,7 +479,7 @@ if(isset($_POST['signup'])){
 
       pendingEmail = email;
       pendingName = firstName;
-      pendingName = lastName;
+      pendingLastName = lastName;
       pendingPassword = password;
       generatedCode = generateCode();
 
@@ -571,47 +571,82 @@ if(isset($_POST['signup'])){
     };
 
 
-    fetch("registerCustomer.php",{
+    fetch("registerCustomer.php", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(user)
+})
 
-        method:"POST",
+.then(response => response.json())
 
-        headers:{
-            "Content-Type":"application/json"
-        },
+.then(result => {
 
-        body:JSON.stringify(user)
+    if(result.success === true){
 
-    })
+        // Create the same logged-in user object
+        // that signin.php creates
+        const loggedUser = {
 
+            id: result.user_id,
 
-    .then(response=>response.text())
+            user_id: result.user_id,
 
+            firstName: result.first_name,
 
-    .then(result=>{
+            lastName: result.last_name,
 
+            email: result.email,
 
-        if(result.trim()=="success"){
+            role: result.role
 
-
-            localStorage.setItem(
-                'loggedInUser',
-                pendingEmail
-            );
-
-
-            renderSuccessStep();
-
-
-        }else{
-
-
-            alert(result);
+        };
 
 
-        }
+        // Save logged-in user
+        localStorage.setItem(
+            "loggedInUser",
+            JSON.stringify(loggedUser)
+        );
 
 
-    });
+        // Save individual values
+        localStorage.setItem(
+            "loggedInUserId",
+            result.user_id
+        );
+
+        localStorage.setItem(
+            "loggedInName",
+            result.first_name + " " + result.last_name
+        );
+
+        localStorage.setItem(
+            "loggedInEmail",
+            result.email
+        );
+
+
+        // Show success screen
+        renderSuccessStep();
+
+
+    }else{
+
+        alert(result.message);
+
+    }
+
+})
+
+.catch(error => {
+
+    console.error("Registration error:", error);
+
+    alert("Unable to create account. Please try again.");
+
+});
 
 
 } else {

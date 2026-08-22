@@ -452,67 +452,75 @@ echo "Email doesn't exist";
         emailError.classList.add('show');
         return;
       }
-      fetch("customerLogin.php",{
-
-    method:"POST",
-
-    headers:{
-        "Content-Type":"application/json"
+ fetch("signinUser.php", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
     },
-
-    body:JSON.stringify({
-
-        email:email,
-        password:password
-
+    body: JSON.stringify({
+        email: email,
+        password: password
     })
-
 })
+.then(response => response.json())
+.then(result => {
 
-
-.then(response=>response.json())
-
-
-.then(result=>{
-
-
-    if(result.status === "success"){
+    if (result.success === true) {
 
         emailError.classList.remove("show");
 
-        // Save the whole user
+        // Save the complete user information
+        const user = {
+            id: result.user_id,
+            user_id: result.user_id,
+            firstName: result.first_name,
+            lastName: result.last_name,
+            email: result.email,
+            role: result.role
+        };
+
         localStorage.setItem(
             "loggedInUser",
-            JSON.stringify(result.user)
+            JSON.stringify(user)
         );
 
         // Save individual values
         localStorage.setItem(
             "loggedInUserId",
-            result.user.id
+            result.user_id
         );
 
         localStorage.setItem(
             "loggedInName",
-            result.user.firstName + " " + result.user.lastName
+            result.first_name + " " + result.last_name
         );
 
         localStorage.setItem(
             "loggedInEmail",
-            result.user.email
+            result.email
         );
 
         renderSuccessStep();
 
-    }else{
+    } else {
 
         emailError.textContent = result.message;
         emailError.classList.add("show");
 
     }
 
+})
+.catch(error => {
+
+    console.error("Login error:", error);
+
+    emailError.textContent =
+        "Unable to sign in. Please try again.";
+
+    emailError.classList.add("show");
 
 });
+
     });
 
     emailField.addEventListener('keydown', (e) => {
