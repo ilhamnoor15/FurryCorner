@@ -1,27 +1,62 @@
+php
 <?php
 
-session_start();
-
 include "db.php";
+
+header("Content-Type: application/json");
 
 $data = json_decode(
     file_get_contents("php://input"),
     true
 );
 
-$firstName = $data["firstName"];
-$lastName  = $data["lastName"];
-$email     = $data["email"];
-$password  = $data["password"];
+if (!$data) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Invalid request data"
+    ]);
+    exit;
+}
 
-
-// Check existing email
-$check = mysqli_query(
+$firstName = mysqli_real_escape_string(
     $conn,
-    "SELECT * FROM users WHERE email='$email'"
+    $data["firstName"] ?? ""
 );
 
-if(mysqli_num_rows($check) > 0){
+$lastName = mysqli_real_escape_string(
+    $conn,
+    $data["lastName"] ?? ""
+);
+
+$email = mysqli_real_escape_string(
+    $conn,
+    strtolower(trim($data["email"] ?? ""))
+);
+
+$password = $data["password"] ?? "";
+
+if (
+    empty($firstName) ||
+    empty($lastName) ||
+    empty($email) ||
+    empty($password)
+) {
+    echo json_encode([
+        "success" => false,
+        "message" => "All fields are required"
+    ]);
+    exit;
+}
+
+
+// Check if email already exists
+
+$check = mysqli_query(
+    $conn,
+    "SELECT user_id FROM users WHERE email='$email' LIMIT 1"
+);
+
+if (mysqli_num_rows($check) > 0) {
 
     echo json_encode([
         "success" => false,
@@ -32,77 +67,62 @@ if(mysqli_num_rows($check) > 0){
 }
 
 
-// Encrypt password
+// Hash password
+
 $hashedPassword = password_hash(
     $password,
     PASSWORD_DEFAULT
 );
 
 
-// Default customer role
+// Default role
+
 $role = "customer";
 
 
 // Insert user
+
 $sql = "
-INSERT INTO users
-(
-    first_name,
-    last_name,
-    email,
-    password,
-    role
-)
-VALUES
-(
-    '$firstName',
-    '$lastName',
-    '$email',
-    '$hashedPassword',
-    '$role'
-)
+    INSERT INTO users
+    (
+        first_name,
+        last_name,
+        email,
+        password,
+        role
+    )
+    VALUES
+    (
+        '$firstName',
+        '$lastName',
+        '$email',
+        '$hashedPassword',
+        '$role'
+    )
 ";
 
 
-if(mysqli_query($conn, $sql)){
+if (mysqli_query($conn, $sql)) {
 
-    // Get newly created user's ID
     $userId = mysqli_insert_id($conn);
 
-
-    // Create PHP session
-    $_SESSION['user_id'] = $userId;
-    $_SESSION['user_email'] = $email;
-    $_SESSION['first_name'] = $firstName;
-    $_SESSION['last_name'] = $lastName;
-    $_SESSION['role'] = $role;
-
-
-    // Return user information to JavaScript
     echo json_encode([
-
         "success" => true,
-
-        "user_id" => $userId,
-
-        "first_name" => $firstName,
-
-        "last_name" => $lastName,
-
-        "email" => $email,
-
-        "role" => $role
-
+        "message" => "Account created successfully",
+        "user" => [
+            "id" => $userId,
+            "firstName" => $firstName,
+            "lastName" => $lastName,
+            "email" => $email,
+            "role" => $role
+        ]
     ]);
 
-}else{
+} else {
 
     echo json_encode([
-
         "success" => false,
-
         "message" => mysqli_error($conn)
-
     ]);
 
 }
