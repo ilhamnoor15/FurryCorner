@@ -721,7 +721,7 @@ while ($row = mysqli_fetch_assoc($result)) {
       <li><a href="FurryCorner.php">Home</a></li>
       <li><a href="AllProducts.php">All Products</a></li>
       <li><a href="services.php" class="current">Services</a></li>
-      <li><a href="#">About</a></li>
+      <li><a href="about.php">About</a></li>
       <li><a href="#">Contact Us</a></li>
     </ul>
   </div>

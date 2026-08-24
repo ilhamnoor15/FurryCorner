@@ -1218,30 +1218,40 @@ while($row = mysqli_fetch_assoc($result)){
     nav.classList.toggle('scrolled', window.scrollY > 10);
   });
 
-  let products = [];
-  let filteredProduct = [];
-
+let products = [];
+let filteredProducts = [];
 
 fetch("getProducts.php")
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Failed to load products. HTTP " + response.status);
+        }
 
-.then(response => response.json())
+        return response.json();
+    })
+    .then(data => {
 
-.then(data => {
+        console.log("Products received from database:", data.length);
+        console.log(data);
 
-    products = data;
+        products = data;
 
-    filteredProducts = [...products];
+        filteredProducts = [...products];
 
-    applyFiltersAndSort();
+        currentPage = 1;
 
-    renderProducts();
+        applyFiltersAndSort();
 
-})
-.catch(error => {
+    })
+    .catch(error => {
+        console.error("Failed loading products:", error);
 
-    console.error("Failed loading products:", error);
-
-});
+        grid.innerHTML = `
+            <p style="grid-column:1/-1;font-weight:700;color:red;">
+                Failed to load products.
+            </p>
+        `;
+    });
 
   let notifications = [
     {
@@ -1935,6 +1945,7 @@ applyFiltersAndSort();
   });
  
   applyFiltersAndSort();
+
   document.addEventListener(
   'keydown',
   e => {
