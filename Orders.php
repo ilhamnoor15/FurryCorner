@@ -772,7 +772,7 @@ View
 
 <button 
 class="action-btn refund"
-data-id="${order.id}">
+data-id="${order.order_id}">
 Refund
 </button>
 
@@ -936,91 +936,259 @@ if(e.target.classList.contains("view-order")){
 let id = e.target.dataset.id;
 
 
-fetch("getOrderDetails.php?id="+id)
+fetch("getOrderDetails.php?id=" + encodeURIComponent(id))
+    .then(res => res.json())
+    .then(data => {
+
+        console.log("getOrderDetails.php response:", data);
+
+        if (!data.success) {
+
+            alert(
+                data.message ||
+                "Unable to load order details."
+            );
+
+            return;
+
+        }
+
+        const order = data.order;
+
+        document.getElementById("orderDetails").innerHTML = `
+
+            <div class="order-detail-header">
+
+                <div class="order-detail-eyebrow">
+                    Order Details
+                </div>
+
+                <div class="order-detail-id">
+                    #${order.order_id}
+                </div>
+
+                <span class="order-detail-status">
+                    ${order.status || "Pending"}
+                </span>
+
+            </div>
 
 
-.then(res=>res.json())
+            <div class="order-detail-body">
 
 
-.then(order=>{
+                <div class="order-detail-section">
+
+                    <h4>
+                        Customer &amp; Shipping
+                    </h4>
 
 
-document.getElementById("orderDetails").innerHTML = `
+                    <div class="order-detail-grid">
 
-<div class="order-detail-header">
-  <div class="order-detail-eyebrow">Order Details</div>
-  <div class="order-detail-id">#${order.order_id}</div>
-  <span class="order-detail-status">${order.status || "Pending"}</span>
-</div>
+                        <div>
 
-<div class="order-detail-body">
+                            <div class="order-detail-field-label">
+                                Name
+                            </div>
 
-  <div class="order-detail-section">
-    <h4>Customer &amp; Shipping</h4>
-    <div class="order-detail-grid">
-      <div>
-        <div class="order-detail-field-label">Name</div>
-        <div class="order-detail-field-value">${order.first_name} ${order.last_name}</div>
-      </div>
-      <div>
-        <div class="order-detail-field-label">Phone</div>
-        <div class="order-detail-field-value">${order.phone}</div>
-      </div>
-      <div class="span-2">
-        <div class="order-detail-field-label">Address</div>
-        <div class="order-detail-field-value">${order.address}</div>
-      </div>
-      <div>
-        <div class="order-detail-field-label">City</div>
-        <div class="order-detail-field-value">${order.city}</div>
-      </div>
-      <div>
-        <div class="order-detail-field-label">Province</div>
-        <div class="order-detail-field-value">${order.province}</div>
-      </div>
-      <div>
-        <div class="order-detail-field-label">Postal Code</div>
-        <div class="order-detail-field-value">${order.postal_code}</div>
-      </div>
-      <div>
-        <div class="order-detail-field-label">Payment Method</div>
-        <div class="order-detail-field-value">${order.payment_method}</div>
-      </div>
-    </div>
-  </div>
+                            <div class="order-detail-field-value">
+                                ${order.first_name || ''} 
+                                ${order.last_name || ''}
+                            </div>
 
-  <div class="order-detail-section">
-    <h4>Products</h4>
-
-    ${order.items.map(item => `
-      <div class="order-item-row">
-        <div>
-          <div class="order-item-name">${item.product_name}</div>
-          <div class="order-item-qty">Qty: ${item.quantity} &times; ₱${Number(item.price).toLocaleString('en-PH',{minimumFractionDigits:2})}</div>
-        </div>
-        <div class="order-item-price">₱${Number(item.item_total).toLocaleString('en-PH',{minimumFractionDigits:2})}</div>
-      </div>
-    `).join("")}
-
-  </div>
-
-  <div class="order-total-row">
-    <span class="order-total-label">Total</span>
-    <span class="order-total-value">₱${Number(order.total_amount).toLocaleString('en-PH',{minimumFractionDigits:2})}</span>
-  </div>
-
-</div>
-
-`;
+                        </div>
 
 
+                        <div>
 
-document
-.getElementById("orderModal")
-.classList.add("open");
+                            <div class="order-detail-field-label">
+                                Phone
+                            </div>
+
+                            <div class="order-detail-field-value">
+                                ${order.phone || '-'}
+                            </div>
+
+                        </div>
 
 
-});
+                        <div class="span-2">
+
+                            <div class="order-detail-field-label">
+                                Address
+                            </div>
+
+                            <div class="order-detail-field-value">
+                                ${order.address || '-'}
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="order-detail-field-label">
+                                City
+                            </div>
+
+                            <div class="order-detail-field-value">
+                                ${order.city || '-'}
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="order-detail-field-label">
+                                Province
+                            </div>
+
+                            <div class="order-detail-field-value">
+                                ${order.province || '-'}
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="order-detail-field-label">
+                                Postal Code
+                            </div>
+
+                            <div class="order-detail-field-value">
+                                ${order.postal_code || '-'}
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="order-detail-field-label">
+                                Payment Method
+                            </div>
+
+                            <div class="order-detail-field-value">
+                                ${order.payment_method || '-'}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="order-detail-section">
+
+                    <h4>
+                        Products
+                    </h4>
+
+
+                    ${
+                        (order.items || []).map(item => `
+
+                            <div class="order-item-row">
+
+                                <div>
+
+                                    <div class="order-item-name">
+                                        ${item.product_name}
+                                    </div>
+
+                                    <div class="order-item-qty">
+
+                                        Qty:
+                                        ${item.quantity}
+
+                                        &times;
+
+                                        ₱${Number(
+                                            item.price
+                                        ).toLocaleString(
+                                            'en-PH',
+                                            {
+                                                minimumFractionDigits:2
+                                            }
+                                        )}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="order-item-price">
+
+                                    ₱${Number(
+                                        item.item_total
+                                    ).toLocaleString(
+                                        'en-PH',
+                                        {
+                                            minimumFractionDigits:2
+                                        }
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        `).join('')
+
+                    }
+
+                </div>
+
+
+                <div class="order-total-row">
+
+                    <span class="order-total-label">
+                        Total
+                    </span>
+
+                    <span class="order-total-value">
+
+                        ₱${Number(
+                            order.total_amount
+                        ).toLocaleString(
+                            'en-PH',
+                            {
+                                minimumFractionDigits:2
+                            }
+                        )}
+
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        `;
+
+
+        /* OPEN MODAL */
+
+        document
+            .getElementById("orderModal")
+            .classList.add("open");
+
+    })
+    .catch(error => {
+
+        console.error(
+            "Error loading order:",
+            error
+        );
+
+        alert(
+            "Unable to load order details."
+        );
+
+    });
 
 
 }
