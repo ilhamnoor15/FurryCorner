@@ -1,14 +1,10 @@
-php
 <?php
 
 include "db.php";
 
-header("Content-Type: application/json");
+header("Content-Type: application/json; charset=UTF-8");
 
-$data = json_decode(
-    file_get_contents("php://input"),
-    true
-);
+$data = json_decode(file_get_contents("php://input"), true);
 
 if (!$data) {
     echo json_encode([
@@ -18,22 +14,10 @@ if (!$data) {
     exit;
 }
 
-$firstName = mysqli_real_escape_string(
-    $conn,
-    $data["firstName"] ?? ""
-);
-
-$lastName = mysqli_real_escape_string(
-    $conn,
-    $data["lastName"] ?? ""
-);
-
-$email = mysqli_real_escape_string(
-    $conn,
-    strtolower(trim($data["email"] ?? ""))
-);
-
-$password = $data["password"] ?? "";
+$firstName = trim($data["firstName"] ?? "");
+$lastName  = trim($data["lastName"] ?? "");
+$email     = strtolower(trim($data["email"] ?? ""));
+$password  = $data["password"] ?? "";
 
 if (
     empty($firstName) ||
@@ -51,12 +35,19 @@ if (
 
 // Check if email already exists
 
-$check = mysqli_query(
+$stmt = mysqli_prepare(
     $conn,
-    "SELECT user_id FROM users WHERE email='$email' LIMIT 1"
+    "SELECT user_id FROM users WHERE email = ? LIMIT 1"
 );
 
-if (mysqli_num_rows($check) > 0) {
+mysqli_stmt_bind_param($stmt, "s", $email);
+mysqli_stmt_execute($stmt);
+
+$result = mysqli_stmt_get_result($stmt);
+
+if (mysqli_num_rows($result) > 0) {
+
+    mysqli_stmt_close($stmt);
 
     echo json_encode([
         "success" => false,
@@ -66,6 +57,8 @@ if (mysqli_num_rows($check) > 0) {
     exit;
 }
 
+mysqli_stmt_close($stmt);
+
 
 // Hash password
 
@@ -74,16 +67,14 @@ $hashedPassword = password_hash(
     PASSWORD_DEFAULT
 );
 
-
-// Default role
-
 $role = "customer";
 
 
 // Insert user
 
-$sql = "
-    INSERT INTO users
+$stmt = mysqli_prepare(
+    $conn,
+    "INSERT INTO users
     (
         first_name,
         last_name,
@@ -91,31 +82,33 @@ $sql = "
         password,
         role
     )
-    VALUES
-    (
-        '$firstName',
-        '$lastName',
-        '$email',
-        '$hashedPassword',
-        '$role'
-    )
-";
+    VALUES (?, ?, ?, ?, ?)"
+);
+
+mysqli_stmt_bind_param(
+    $stmt,
+    "sssss",
+    $firstName,
+    $lastName,
+    $email,
+    $hashedPassword,
+    $role
+);
 
 
-if (mysqli_query($conn, $sql)) {
+if (mysqli_stmt_execute($stmt)) {
 
     $userId = mysqli_insert_id($conn);
 
     echo json_encode([
         "success" => true,
         "message" => "Account created successfully",
-        "user" => [
-            "id" => $userId,
-            "firstName" => $firstName,
-            "lastName" => $lastName,
-            "email" => $email,
-            "role" => $role
-        ]
+
+        "user_id" => $userId,
+        "first_name" => $firstName,
+        "last_name" => $lastName,
+        "email" => $email,
+        "role" => $role
     ]);
 
 } else {
@@ -124,7 +117,10 @@ if (mysqli_query($conn, $sql)) {
         "success" => false,
         "message" => mysqli_error($conn)
     ]);
-
 }
+
+
+mysqli_stmt_close($stmt);
+mysqli_close($conn);
 
 ?>
